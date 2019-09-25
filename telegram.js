@@ -35,6 +35,7 @@ function getUpdates(update_id) {
 
 function sendMessage(msg, chat_id) {
     let url = baseUrl + 'sendMessage';
+    msg = '' + msg;
     request({
         url: url,
         method: 'POST',
@@ -47,4 +48,4 @@ function sendMessage(msg, chat_id) {
 }
 
 // убрать комент, чтобы запустить
-// getUpdates();
+getUpdates();

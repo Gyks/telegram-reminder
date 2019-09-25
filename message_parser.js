@@ -1,3 +1,4 @@
+const {addTask} = require('./sqlite_test.js');
 test_msgs = [
     'напомни через 2 часа вынести мусор',
     'напомни через 10 дней вынести тиммейтов в доке2',
@@ -6,7 +7,6 @@ test_msgs = [
     'напомни через 2 месяца, сделать паунс в окно',
     'напомни 24 октября убить кота'
 ];
-
 //TODO
 // добавить парсер сообщения для даты (21 октября)
 // юзать текущий год, обработать исключение, когда пользователь пишет дату <= текущей.
@@ -15,34 +15,35 @@ test_msgs = [
 function createReminder(message, dateTypeString, amount) {
 	let now = new Date();
 	let nowString = '';
-	console.log(now);
+	let taskDateString = '';
+	nowString = now.toString();
 	switch (dateTypeString) {
 		case 'час':
 			now.setHours(now.getHours() + +amount);
-			nowString = now.toString();
+			taskDateString = now.toString();
 			break;
 		case 'дней' || 'день':
 			now.setHours(now.getHours() + +amount*24);
-			nowString = now.toString();
+			taskDateString = now.toString();
 			break;
 		case 'недел':
 			now.setHours(now.getHours() + +amount*24*7);
-			nowString = now.toString();
+			taskDateString = now.toString();
 			break;
 		case 'месяц':
 			now.setHours(now.getHours() + +amount*24*30);
-			nowString = now.toString();
+			taskDateString = now.toString();
 			break;
 		case 'секун':
 			now.setSeconds(now.getSeconds() + +amount);
-			nowString = now.toString();
+			taskDateString = now.toString();
 			break;
 		default:
 			return 'error';
 	}
 	let remindAfter = {
-		'dateObj': now,
-		'dateString': nowString,
+		'nowDateString': nowString,
+		'taskDateString': taskDateString,
 		'message': message,
 	};
 	return remindAfter;
@@ -54,4 +55,5 @@ function parseUserInput(userMessage) {
 	return createReminder(user_params[3], user_params[2], user_params[1]);
 }
 
-console.log(parseUserInput(test_msgs[2]));
+let task = parseUserInput(test_msgs[2]);
+addTask(task.nowDateString, task.taskDateString, task.message);

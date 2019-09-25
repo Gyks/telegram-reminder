@@ -13,3 +13,22 @@ db.serialize(()=>{
             status BOOLEAN,
             message TEXT)`);
 });
+
+function addTask(date_recived, date_execute, message) {
+    db.run(`INSERT INTO tg_tasks(date_recived, date_execute, status, message) VALUES($date_recived, $date_execute, $status, $message)`, {
+        $date_recived: date_recived,
+        $date_execute: date_execute,
+        $status: false,
+        $message: message,
+    });
+}
+
+function checkTasks() {
+ // must return an array of ready for sending messages
+}
+
+function deleteTask(id) {
+// must delete task if it's done and send already (dates check, status check)
+}
+// addTask("321", "3123", "zaazaa");
+module.exports.addTask = addTask;
