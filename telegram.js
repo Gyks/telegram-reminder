@@ -1,6 +1,8 @@
 // https://api.telegram.org/bot<token>/METHOD_NAME
 const request = require('request');
 const dotenv = require('dotenv');
+const {addTask, checkTasks} = require('./sqlite_test.js');
+const {parseUserInput} = require('./message_parser.js');
 dotenv.config();
 const token = process.env.API_TOKEN;
 const baseUrl = `https://api.telegram.org/bot${token}/`;
@@ -15,7 +17,11 @@ function parseShite(body) {
     }
     let chat_id = updateObj.result[0].message.chat.id;
     let text = updateObj.result[0].message.text;
-    sendMessage(text, chat_id);
+    let task = parseUserInput(text);
+    if (task != null) {
+    addTask(task.nowDateString, task.taskDateString, task.message);
+    }
+    //sendMessage(text, chat_id);
     getUpdates(updateObj.result[0].update_id);
 }
 
@@ -26,9 +32,15 @@ function getUpdates(update_id) {
         method: 'POST',
         form: {
             offset: update_id + 1,
-            timeout: 99,
+            timeout: 1,
         },
       }, function(error, response, body){
+        let messages = checkTasks();
+        if (messages != null) {
+            messages.forEach(msg => {
+                sendMessage(msg, chat_id); 
+            });
+        }
         parseShite(body);
       });
 }

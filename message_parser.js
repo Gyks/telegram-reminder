@@ -1,4 +1,4 @@
-const {addTask} = require('./sqlite_test.js');
+const {addTask, checkTasks} = require('./sqlite_test.js');
 test_msgs = [
     'напомни через 2 часа вынести мусор',
     'напомни через 10 дней вынести тиммейтов в доке2',
@@ -52,8 +52,8 @@ function createReminder(message, dateTypeString, amount) {
 function parseUserInput(userMessage) {
 	let re = /напомни\s+через\s(\d+) (час|недел|секун|месяц|дней|день).\w{0,2},?\s?(.+)/im;
 	let user_params = userMessage.match(re);
-	return createReminder(user_params[3], user_params[2], user_params[1]);
+	if (user_params)
+		return createReminder(user_params[3], user_params[2], user_params[1]);
 }
 
-let task = parseUserInput(test_msgs[2]);
-addTask(task.nowDateString, task.taskDateString, task.message);
+module.exports.parseUserInput = parseUserInput;
