@@ -15,25 +15,26 @@ test_msgs = [
 function createReminder(message, dateTypeString, amount) {
 	let now = new Date();
 	let nowString = '';
+	console.log(now);
 	switch (dateTypeString) {
 		case 'час':
-			now.setHours(now.getHours() + amount);
+			now.setHours(now.getHours() + +amount);
 			nowString = now.toString();
 			break;
 		case 'дней' || 'день':
-			now.setHours(now.getHours() + amount*24);
+			now.setHours(now.getHours() + +amount*24);
 			nowString = now.toString();
 			break;
 		case 'недел':
-			now.setHours(now.getHours() + amount*24*7);
+			now.setHours(now.getHours() + +amount*24*7);
 			nowString = now.toString();
 			break;
 		case 'месяц':
-			now.setHours(now.getHours() + amount*24*30);
+			now.setHours(now.getHours() + +amount*24*30);
 			nowString = now.toString();
 			break;
 		case 'секун':
-			now.setSeconds(now.getSeconds() + amount);
+			now.setSeconds(now.getSeconds() + +amount);
 			nowString = now.toString();
 			break;
 		default:
@@ -53,4 +54,4 @@ function parseUserInput(userMessage) {
 	return createReminder(user_params[3], user_params[2], user_params[1]);
 }
 
-parseUserInput(test_msgs[0]);
+console.log(parseUserInput(test_msgs[2]));
