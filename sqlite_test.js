@@ -1,5 +1,5 @@
-let sqlite3 = require('sqlite3').verbose();
-let db = new sqlite3.Database('user_timers');
+let sqlite3 = require("sqlite3").verbose();
+let db = new sqlite3.Database("user_timers");
 
 // table for notifications.
 // id, date recived, execution date, status: 0 / 1, message on exec
@@ -10,36 +10,45 @@ db.serialize(() => {
             task_id INTEGER PRIMARY KEY,
             date_recived TEXT NOT NULL,
             date_execute TEXT NOT NULL,
+            chat_id TEXT NOT NULL,
             status BOOLEAN,
-            message TEXT)`);
+            message TEXT)`
+    );
 });
 
-function addTask(date_recived, date_execute, message) {
-    db.run(`INSERT INTO tg_tasks(date_recived, date_execute, status, message) VALUES($date_recived, $date_execute, $status, $message)`, {
-        $date_recived: date_recived,
-        $date_execute: date_execute,
-        $status: false,
-        $message: message,
-    });
+function addTask(date_recived, date_execute, message, chat_id) {
+    db.run(
+        `INSERT INTO tg_tasks(date_recived, date_execute, status, message, chat_id) VALUES($date_recived, $date_execute, $status, $message, $chat_id)`, {
+            $date_recived: date_recived,
+            $date_execute: date_execute,
+            $status: false,
+            $message: message,
+            $chat_id: chat_id,
+        }
+    );
 }
 
-function checkTasks() {
-    let messages = [];
+function checkTasks(sendMessage) {
     let dateNow = new Date();
-    db.all("SELECT rowid AS tg_task, date_execute, message, status FROM tg_tasks ORDER BY task_id DESC LIMIT 10", function (err, rows) {
-        rows.forEach(function (row) {
-            //console.log(row.tg_task + ": " + row.message + " : " + row.status);
-            let taskDate = new Date(row.date_execute);
-            //console.log(`${taskDate} \n ${dateNow} \n ${taskDate >= dateNow}`);
-            if( row.status == 0 && taskDate <= dateNow ) {
-                messages.push(row.message);
-                //console.log(messages);
-                db.run("UPDATE tg_tasks SET status = 1 WHERE task_id = ?", row.tg_task);
-            }
-        });
-    });
-    console.log(messages);
-    return messages;
+    db.all(
+        "SELECT rowid AS tg_task, date_execute, message, status, chat_id FROM tg_tasks ORDER BY task_id DESC LIMIT 5",
+        function(err, rows) {
+            rows.forEach(function(row) {
+                let taskDate = new Date(row.date_execute);
+                if (row.status == 0 && taskDate <= dateNow) {
+                    //sendMessage(row.message, chat_id);
+                    db.run(
+                        "UPDATE tg_tasks SET status = 1 WHERE task_id = ?",
+                        row.tg_task,
+                        function(err) {
+                            console.log(row.message);
+                            sendMessage(row.message, row.chat_id);
+                        }
+                    );
+                }
+            });
+        }
+    );
 }
 
 module.exports.addTask = addTask;
