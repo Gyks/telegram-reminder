@@ -22,7 +22,9 @@ function createReminder(message, dateTypeString, amount) {
             now.setHours(now.getHours() + +amount);
             taskDateString = now.toString();
             break;
-        case 'дней' || 'день':
+	case 'дня':
+	case 'день':
+        case 'дней':
             now.setHours(now.getHours() + +amount * 24);
             taskDateString = now.toString();
             break;
@@ -52,6 +54,7 @@ function createReminder(message, dateTypeString, amount) {
 function parseUserInput(userMessage) {
     let re = /напомни\s+через\s(\d+) (час|недел|секунд|месяц|дней|день).\w{0,2},?\s?(.+)/im;
     let user_params = userMessage.match(re);
+	console.log(user_params);
     if (user_params)
         return createReminder(user_params[3], user_params[2], user_params[1]);
 }

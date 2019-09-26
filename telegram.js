@@ -32,7 +32,7 @@ function getUpdates(update_id, chat_id) {
         method: 'POST',
         form: {
             offset: update_id + 1,
-            timeout: 1,
+            timeout: 30,
         },
     }, function(error, response, body) {
         checkTasks(sendMessage);
