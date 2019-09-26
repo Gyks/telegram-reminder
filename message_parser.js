@@ -1,4 +1,4 @@
-const {addTask, checkTasks} = require('./sqlite_test.js');
+const { addTask, checkTasks } = require('./sqlite_test.js');
 test_msgs = [
     'напомни через 2 часа вынести мусор',
     'напомни через 10 дней вынести тиммейтов в доке2',
@@ -13,47 +13,47 @@ test_msgs = [
 // попробовать переписать через this и конструктор объектов.
 
 function createReminder(message, dateTypeString, amount) {
-	let now = new Date();
-	let nowString = '';
-	let taskDateString = '';
-	nowString = now.toString();
-	switch (dateTypeString) {
-		case 'час':
-			now.setHours(now.getHours() + +amount);
-			taskDateString = now.toString();
-			break;
-		case 'дней' || 'день':
-			now.setHours(now.getHours() + +amount*24);
-			taskDateString = now.toString();
-			break;
-		case 'недел':
-			now.setHours(now.getHours() + +amount*24*7);
-			taskDateString = now.toString();
-			break;
-		case 'месяц':
-			now.setHours(now.getHours() + +amount*24*30);
-			taskDateString = now.toString();
-			break;
-		case 'секун':
-			now.setSeconds(now.getSeconds() + +amount);
-			taskDateString = now.toString();
-			break;
-		default:
-			return 'error';
-	}
-	let remindAfter = {
-		'nowDateString': nowString,
-		'taskDateString': taskDateString,
-		'message': message,
-	};
-	return remindAfter;
+    let now = new Date();
+    let nowString = '';
+    let taskDateString = '';
+    nowString = now.toString();
+    switch (dateTypeString) {
+        case 'час':
+            now.setHours(now.getHours() + +amount);
+            taskDateString = now.toString();
+            break;
+        case 'дней' || 'день':
+            now.setHours(now.getHours() + +amount * 24);
+            taskDateString = now.toString();
+            break;
+        case 'недел':
+            now.setHours(now.getHours() + +amount * 24 * 7);
+            taskDateString = now.toString();
+            break;
+        case 'месяц':
+            now.setHours(now.getHours() + +amount * 24 * 30);
+            taskDateString = now.toString();
+            break;
+        case 'секунд':
+            now.setSeconds(now.getSeconds() + +amount);
+            taskDateString = now.toString();
+            break;
+        default:
+            return 'error';
+    }
+    let remindAfter = {
+        'nowDateString': nowString,
+        'taskDateString': taskDateString,
+        'message': message,
+    };
+    return remindAfter;
 }
 
 function parseUserInput(userMessage) {
-	let re = /напомни\s+через\s(\d+) (час|недел|секун|месяц|дней|день).\w{0,2},?\s?(.+)/im;
-	let user_params = userMessage.match(re);
-	if (user_params)
-		return createReminder(user_params[3], user_params[2], user_params[1]);
+    let re = /напомни\s+через\s(\d+) (час|недел|секунд|месяц|дней|день).\w{0,2},?\s?(.+)/im;
+    let user_params = userMessage.match(re);
+    if (user_params)
+        return createReminder(user_params[3], user_params[2], user_params[1]);
 }
 
 module.exports.parseUserInput = parseUserInput;

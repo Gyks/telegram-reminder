@@ -20,7 +20,7 @@ function parseShite(body) {
     let task = parseUserInput(text);
     if (task != null) {
         addTask(task.nowDateString, task.taskDateString, task.message, chat_id);
-        sendMessage('task added', chat_id);
+        sendMessage('Да будет так.', chat_id);
     }
     getUpdates(updateObj.result[0].update_id, chat_id);
 }

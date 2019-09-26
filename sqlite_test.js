@@ -41,8 +41,7 @@ function checkTasks(sendMessage) {
                         "UPDATE tg_tasks SET status = 1 WHERE task_id = ?",
                         row.tg_task,
                         function(err) {
-                            console.log(row.message);
-                            sendMessage(row.message, row.chat_id);
+                            sendMessage("Напоминаю - " + row.message, row.chat_id);
                         }
                     );
                 }
