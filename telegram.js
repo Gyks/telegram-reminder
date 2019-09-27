@@ -4,19 +4,21 @@ const dotenv = require('dotenv');
 const { addTask, checkTasks } = require('./sqlite_test.js');
 const { parseUserInput } = require('./message_parser.js');
 dotenv.config();
-const token = process.env.API_TOKEN;
-const baseUrl = `https://api.telegram.org/bot${token}/`;
-console.log(token);
+const TOKEN = process.env.API_TOKEN;
+const baseUrl = `https://api.telegram.org/bot${TOKEN}/`;
+console.log(TOKEN);
 
 // переписать это говно
 function parseShite(body) {
     let updateObj = JSON.parse(body);
-    if (updateObj.result[0] == null) {
+    if (!updateObj.result.length) {
         getUpdates();
         return;
     }
-    let chat_id = updateObj.result[0].message.chat.id;
-    let text = updateObj.result[0].message.text;
+    const {
+        chat_id,
+        text
+    } = updateObj.result[0].message
     let task = parseUserInput(text);
     if (task != null) {
         addTask(task.nowDateString, task.taskDateString, task.message, chat_id);
@@ -29,7 +31,7 @@ function getUpdates(update_id, chat_id) {
     let url = baseUrl + 'getUpdates';
     request({
         url: url,
-        method: 'POST',
+        method: 'GET',
         form: {
             offset: update_id + 1,
             timeout: 30,
